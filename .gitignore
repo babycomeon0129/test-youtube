@@ -1,0 +1,8 @@
+.*.swp
+.*.db
+fingerprint.txt
+.DS_Store
+index.vue.html
+node_modules
+dist
+dist.zip
