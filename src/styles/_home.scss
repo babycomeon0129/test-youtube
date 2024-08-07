@@ -8,9 +8,12 @@ h2 {
 
 
 .container {
-    display: flex;
     max-width: 1600px;
     padding: 30px;
+}
+
+.video {
+    display: flex;
 }
 
 .main__video {
@@ -46,12 +49,10 @@ h2 {
 }
 
 .main__video__description {
-    // width: 100%;
-    // text-overflow: ellipsis;
-    // overflow: hidden;
-    // white-space: nowrap;
-    // /* Limit the Text line */
-    // -webkit-line-clamp: 11;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 11;
+    overflow: hidden;
 }
 
 .video__image__wrapper {
@@ -98,5 +99,34 @@ h2 {
 
     &:hover {
         background: #ededed;
+    }
+}
+
+.user__list {
+    list-style: none;
+
+    li {
+        display: flex;
+        margin-bottom: 8px;
+    }
+
+    img {
+        flex-shrink: 0;
+        width: 60px;
+        height: 60px;
+        margin-right: 8px;
+        border-radius: 100%;
+        overflow: hidden;
+    }
+}
+
+.user__name {
+    font-weight: bold;
+
+    span {
+        margin-left: 5px;
+        font-weight: normal;
+        font-size: 12px;
+        color: $block_txt;
     }
 }
