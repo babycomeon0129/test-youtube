@@ -6,6 +6,12 @@ This template should help get you started developing with Vue 3 in Vite.
 
 event side需打包給廠商時，請使用這個repo.
 
+## ticket
+https://bug.pixnet.systems/trac/ticket/97346#comment:4
+https://bug.pixnet.systems/trac/ticket/97880#comment:4
+
+
+
 ## Recommended IDE Setup
 
 [VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
