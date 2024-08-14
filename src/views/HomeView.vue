@@ -54,7 +54,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import axios from 'axios';
 
 const APIKey = 'AIzaSyB2C72BoGuN4_KmG0-cLf5yiOgsMFLu4XU';
@@ -62,7 +62,7 @@ const APIKey = 'AIzaSyB2C72BoGuN4_KmG0-cLf5yiOgsMFLu4XU';
 let videoList = ref(null);
 let mainVideo = ref(null);
 let channelsData = ref(null);
-let commentThreadsList = ref(null);
+let commentThreadsList = ref([]);
 
 
 const getChannelsData = async () => {
@@ -82,22 +82,6 @@ const getChannelsData = async () => {
     }
 }
 
-const getCommentThreads = async () => {
-    try {
-        let res = await axios.get('https://youtube.googleapis.com/youtube/v3/commentThreads', {
-            params: {
-                part: 'id,snippet',
-                videoId: 'QuunE-rRTbI',
-                key: APIKey
-            }
-        });
-        commentThreadsList.value = res.data.items;
-    }
-    catch (error) {
-        console.log(error);
-    }
-}
-
 const getPlaylistItems = async () => {
     let res = await axios.get('https://youtube.googleapis.com/youtube/v3/playlistItems', {
         params: {
@@ -109,8 +93,31 @@ const getPlaylistItems = async () => {
     });
 
     videoList.value = res.data.items;
-    mainVideo.value = videoList.value.shift();
+    mainVideo.value = videoList.value[0];
+    console.log(mainVideo.value.contentDetails?.videoId);
+    getCommentThreads();
 }
+
+
+const getCommentThreads = async () => {
+    try {
+        let res = await axios.get('https://youtube.googleapis.com/youtube/v3/commentThreads', {
+            params: {
+                part: 'id,snippet',
+                videoId: computed(()=> mainVideo.value.contentDetails?.videoId).value,
+                key: APIKey
+            }
+        });
+
+        console.log(res);
+        commentThreadsList.value = res.data.items;
+    }
+    catch (error) {
+        console.log(error);
+    }
+}
+
+
 
 const formatter = (num) => {
     const formatter = new Intl.NumberFormat('zh-Hant-TW', {
@@ -124,11 +131,11 @@ const formatter = (num) => {
 
 const clickTag = video => {
     mainVideo.value = video;
+    getCommentThreads();
 };
 
 getChannelsData();
 getPlaylistItems();
-getCommentThreads();
 
 
 </script>
