@@ -18,7 +18,12 @@
                         </div>
                         <div>頻道訂閱數： {{ formatter(channelsData.statistics.subscriberCount) }}</div>
                         <div>頻道觀看數： {{ formatter(channelsData.statistics.viewCount) }}</div>
+                        <div>影片發佈日期：{{ videoData?.snippet.publishedAt }}</div>
+                        <div>影片觀看數： {{ formatter(videoData.statistics.viewCount) }}</div>
+                        <div>影片按讚數： {{ formatter(videoData.statistics.likeCount) }}</div>
+                        <hr />
                         <div class="main__video__description">
+                            <div></div>
                             {{ mainVideo.snippet.description }}
                         </div>
                     </div>
@@ -32,7 +37,7 @@
                             </div>
                             <div class="video__list__info">
                                 <div class="video__list__tite">{{ video.snippet.title }}</div>
-                                <div>{{ video.snippet.channelTitle }}</div>
+                                <div class="video__list__info__title">{{ video.snippet.channelTitle }}</div>
                             </div>
                         </template>
                     </div>
@@ -63,6 +68,7 @@ let videoList = ref(null);
 let mainVideo = ref(null);
 let channelsData = ref(null);
 let commentThreadsList = ref([]);
+let videoData = ref(null);
 
 
 const getChannelsData = async () => {
@@ -94,8 +100,25 @@ const getPlaylistItems = async () => {
 
     videoList.value = res.data.items;
     mainVideo.value = videoList.value[0];
-    console.log(mainVideo.value.contentDetails?.videoId);
+    getVideoData();
     getCommentThreads();
+}
+
+const getVideoData = async() => {
+    try {
+        let res = await axios.get('https://www.googleapis.com/youtube/v3/videos', {
+            params: {
+                part: 'contentDetails,id,snippet,statistics,topicDetails',
+                id:computed(()=> mainVideo.value.contentDetails?.videoId).value,
+                key: APIKey
+            }
+        })
+
+        videoData.value = res.data.items[0];
+    }
+    catch(error) {
+        console.log(error)
+    }
 }
 
 
@@ -109,8 +132,8 @@ const getCommentThreads = async () => {
             }
         });
 
-        console.log(res);
         commentThreadsList.value = res.data.items;
+        console.log(res.data.items);
     }
     catch (error) {
         console.log(error);
@@ -131,6 +154,7 @@ const formatter = (num) => {
 
 const clickTag = video => {
     mainVideo.value = video;
+    getVideoData();
     getCommentThreads();
 };
 
