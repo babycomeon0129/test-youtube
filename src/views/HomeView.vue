@@ -16,6 +16,7 @@
                             <img :src="channelsData.snippet.thumbnails.default.url" />
                             <div>{{ mainVideo.snippet.channelTitle }}</div>
                         </div>
+                        <div>頻道簡介： {{ channelsData.brandingSettings.channel.description }}</div>
                         <div>頻道訂閱數： {{ formatter(channelsData.statistics.subscriberCount) }}</div>
                         <div>頻道觀看數： {{ formatter(channelsData.statistics.viewCount) }}</div>
                         <div>影片發佈日期：{{ videoData?.snippet.publishedAt }}</div>
