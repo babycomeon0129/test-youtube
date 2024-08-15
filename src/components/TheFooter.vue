@@ -1,7 +1,5 @@
 <template>
-    <footer>
-        Copyright © 2024 <img src="@/assets/images/logo_pixnet.svg" />優像數位媒體科技 ( 股 ) 公司
-    </footer>
+    <footer>Copyright © 2024 <img src="@/assets/images/logo_pixnet.svg" />優像數位媒體科技 ( 股 ) 公司</footer>
 </template>
 
 <style lang="scss" scoped>
@@ -21,7 +19,7 @@ footer {
     }
 
     img {
-        margin: 0 .5em;
+        margin: 0 0.5em;
     }
 }
 </style>

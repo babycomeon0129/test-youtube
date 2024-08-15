@@ -10,12 +10,14 @@ const gtagEvent = (url, category, name, variant = '') => {
     gtag('event', 'purchase', {
         value: 10,
         currency: 'NTD',
-        items: [{
-            item_url: url,
-            item_name: name,
-            item_category: category,
-            item_variant: variant
-        }]
+        items: [
+            {
+                item_url: url,
+                item_name: name,
+                item_category: category,
+                item_variant: variant,
+            },
+        ],
     });
 };
 

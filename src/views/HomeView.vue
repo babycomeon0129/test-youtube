@@ -6,9 +6,11 @@
                     <div class="main__video__wrapper">
                         <iframe
                             :src="`https://www.youtube.com/embed/${mainVideo.contentDetails.videoId}?autoplay=1&mute=1&enablejsapi=1&loop=1&playlist=${mainVideo.contentDetails.videoId}`"
-                            title="YouTube video player" frameborder="0"
+                            title="YouTube video player"
+                            frameborder="0"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                            referrerpolicy="strict-origin-when-cross-origin" allowfullscreen
+                            referrerpolicy="strict-origin-when-cross-origin"
+                            allowfullscreen
                         />
                     </div>
                     <h2>{{ mainVideo.snippet.title }}</h2>
@@ -30,8 +32,12 @@
                     </div>
                 </div>
                 <div class="video__list">
-                    <div v-for="(video, index) in videoList" :key="video.id" class="video__list__wrapper"
-                        @click="clickTag(video)">
+                    <div
+                        v-for="(video, index) in videoList"
+                        :key="video.id"
+                        class="video__list__wrapper"
+                        @click="clickTag(video)"
+                    >
                         <template v-if="index !== 0">
                             <div class="video__image">
                                 <img :src="video.snippet.thumbnails.default.url" />
@@ -65,7 +71,7 @@
 
 <script setup>
 import { ref, computed } from 'vue';
-import { formatter } from '@/assets/js/common.js'
+import { formatter } from '@/assets/js/common.js';
 import axios from 'axios';
 
 const APIKey = 'AIzaSyB2C72BoGuN4_KmG0-cLf5yiOgsMFLu4XU';
@@ -76,23 +82,21 @@ let channelsData = ref(null);
 let commentThreadsList = ref([]);
 let videoData = ref(null);
 
-
 const getChannelsData = async () => {
     try {
         let res = await axios.get('https://youtube.googleapis.com/youtube/v3/channels', {
             params: {
                 part: 'brandingSettings,contentDetails,contentOwnerDetails,id,localizations,snippet,statistics,status,topicDetails',
                 forHandle: '@bwnet',
-                key: APIKey
-            }
+                key: APIKey,
+            },
         });
 
         channelsData.value = res.data.items[0];
-    }
-    catch (error) {
+    } catch (error) {
         console.log(error);
     }
-}
+};
 
 const getPlaylistItems = async () => {
     let res = await axios.get('https://youtube.googleapis.com/youtube/v3/playlistItems', {
@@ -100,50 +104,47 @@ const getPlaylistItems = async () => {
             part: 'contentDetails,id,snippet,status',
             maxResults: 20, // 可接受的值為 0 到 50 (含頭尾)。預設值為 5。
             playlistId: 'PLxdm6JxBd9NN_e_66y64vsIvmAtiVCkOK',
-            key: APIKey
-        }
+            key: APIKey,
+        },
     });
 
     videoList.value = res.data.items;
     mainVideo.value = videoList.value[0];
     getVideoData();
     getCommentThreads();
-}
+};
 
-const getVideoData = async() => {
+const getVideoData = async () => {
     try {
         let res = await axios.get('https://www.googleapis.com/youtube/v3/videos', {
             params: {
                 part: 'contentDetails,id,snippet,statistics,topicDetails',
-                id:computed(()=> mainVideo.value.contentDetails?.videoId).value,
-                key: APIKey
-            }
-        })
+                id: computed(() => mainVideo.value.contentDetails?.videoId).value,
+                key: APIKey,
+            },
+        });
 
         videoData.value = res.data.items[0];
+    } catch (error) {
+        console.log(error);
     }
-    catch(error) {
-        console.log(error)
-    }
-}
-
+};
 
 const getCommentThreads = async () => {
     try {
         let res = await axios.get('https://youtube.googleapis.com/youtube/v3/commentThreads', {
             params: {
                 part: 'id,snippet',
-                videoId: computed(()=> mainVideo.value.contentDetails?.videoId).value,
-                key: APIKey
-            }
+                videoId: computed(() => mainVideo.value.contentDetails?.videoId).value,
+                key: APIKey,
+            },
         });
 
         commentThreadsList.value = res.data.items;
-    }
-    catch (error) {
+    } catch (error) {
         console.log(error);
     }
-}
+};
 
 const getAllPlayList = async () => {
     try {
@@ -152,19 +153,17 @@ const getAllPlayList = async () => {
                 part: 'contentDetails,id,localizations,player,snippet,status',
                 channelId: 'UCwlpC8vX_GkRngPYSnwkJxg',
                 maxResults: 5, // 可接受的值為 0 到 50 (含頭尾)。預設值為 5。
-                key: APIKey
-
-            }
+                key: APIKey,
+            },
         });
         console.log('播放清單：');
         console.log(res.data);
+    } catch (error) {
+        console.log(error);
     }
-    catch(error) {
-        console.log(error)
-    }
-}
+};
 
-const clickTag = video => {
+const clickTag = (video) => {
     mainVideo.value = video;
     getVideoData();
     getCommentThreads();
@@ -173,8 +172,6 @@ const clickTag = video => {
 getChannelsData();
 getPlaylistItems();
 getAllPlayList();
-
-
 </script>
 
 <style lang="scss" scoped>

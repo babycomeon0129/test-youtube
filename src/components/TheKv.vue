@@ -1,6 +1,5 @@
 <template>
-    <section class="kv">
-    </section>
+    <section class="kv"></section>
 </template>
 
 <style lang="scss" scoped>
