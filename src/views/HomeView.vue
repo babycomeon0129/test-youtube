@@ -141,6 +141,24 @@ const getCommentThreads = async () => {
     }
 }
 
+const getAllPlayList = async () => {
+    try {
+        let res = await axios.get('https://youtube.googleapis.com/youtube/v3/playlists', {
+            params: {
+                part: 'contentDetails,id,localizations,player,snippet,status',
+                channelId: 'UCwlpC8vX_GkRngPYSnwkJxg',
+                maxResults: 5, // 可接受的值為 0 到 50 (含頭尾)。預設值為 5。
+                key: APIKey
+
+            }
+        });
+        console.log('播放清單：');
+        console.log(res.data);
+    }
+    catch(error) {
+        console.log(error)
+    }
+}
 
 
 const formatter = (num) => {
@@ -161,6 +179,7 @@ const clickTag = video => {
 
 getChannelsData();
 getPlaylistItems();
+getAllPlayList();
 
 
 </script>
