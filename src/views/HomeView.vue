@@ -51,7 +51,11 @@
                 <li v-for="threads in commentThreadsList" :key="threads.id">
                     <img :src="threads.snippet.topLevelComment.snippet.authorProfileImageUrl" />
                     <div class="user__info">
-                        <div class="user__name">{{ threads.snippet.topLevelComment.snippet.authorDisplayName }}<span>-{{ threads.snippet.topLevelComment.snippet.publishedAt }}</span></div>
+                        <div class="user__name">
+                            {{ threads.snippet.topLevelComment.snippet.authorDisplayName }}
+                            <span>- {{ threads.snippet.topLevelComment.snippet.publishedAt }}</span>
+                            <span>- 按讚數：{{ threads.snippet.topLevelComment.snippet.likeCount }}</span>
+                        </div>
                         <div v-html="threads.snippet.topLevelComment.snippet.textDisplay"></div>
                     </div>
                 </li>
