@@ -94,7 +94,7 @@ const getPlaylistItems = async () => {
     let res = await axios.get('https://youtube.googleapis.com/youtube/v3/playlistItems', {
         params: {
             part: 'contentDetails,id,snippet,status',
-            maxResults: 20,
+            maxResults: 20, // 可接受的值為 0 到 50 (含頭尾)。預設值為 5。
             playlistId: 'PLxdm6JxBd9NN_e_66y64vsIvmAtiVCkOK',
             key: APIKey
         }
