@@ -25,7 +25,6 @@
                         <div v-if="videoData">影片按讚數： {{ formatter(videoData.statistics.likeCount) }}</div>
                         <hr />
                         <div class="main__video__description">
-                            <div></div>
                             {{ mainVideo.snippet.description }}
                         </div>
                     </div>
