@@ -8,7 +8,8 @@
                             :src="`https://www.youtube.com/embed/${mainVideo.contentDetails.videoId}?autoplay=1&mute=1&enablejsapi=1&loop=1&playlist=${mainVideo.contentDetails.videoId}`"
                             title="YouTube video player" frameborder="0"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                            referrerpolicy="strict-origin-when-cross-origin" allowfullscreen />
+                            referrerpolicy="strict-origin-when-cross-origin" allowfullscreen
+                        />
                     </div>
                     <h2>{{ mainVideo.snippet.title }}</h2>
                     <div v-if="channelsData" class="main__video__info">
@@ -20,8 +21,8 @@
                         <div>頻道訂閱數： {{ formatter(channelsData.statistics.subscriberCount) }}</div>
                         <div>頻道觀看數： {{ formatter(channelsData.statistics.viewCount) }}</div>
                         <div>影片發佈日期：{{ videoData?.snippet.publishedAt }}</div>
-                        <div>影片觀看數： {{ formatter(videoData.statistics.viewCount) }}</div>
-                        <div>影片按讚數： {{ formatter(videoData.statistics.likeCount) }}</div>
+                        <div v-if="videoData">影片觀看數： {{ formatter(videoData.statistics.viewCount) }}</div>
+                        <div v-if="videoData">影片按讚數： {{ formatter(videoData.statistics.likeCount) }}</div>
                         <hr />
                         <div class="main__video__description">
                             <div></div>
@@ -134,7 +135,6 @@ const getCommentThreads = async () => {
         });
 
         commentThreadsList.value = res.data.items;
-        console.log(res.data.items);
     }
     catch (error) {
         console.log(error);
