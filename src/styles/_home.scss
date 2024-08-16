@@ -107,7 +107,7 @@ h2 {
     padding: 0;
     list-style: none;
 
-    li {
+    .user__wrapper {
         display: flex;
         margin-bottom: 8px;
     }
@@ -146,4 +146,23 @@ h2 {
 
 .notice {
     color: $block_title;
+}
+
+.user__replies {
+    padding-left: 1em;
+    font-size: 14px;
+
+    img {
+        width: 20px;
+        height: 20px;
+    }
+
+    ul {
+        padding: 0;
+        list-style: none;
+    }
+
+    li {
+        display: flex;
+    }
 }

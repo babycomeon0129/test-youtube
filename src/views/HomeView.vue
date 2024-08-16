@@ -2,10 +2,10 @@
     <div class="home">
         <div class="container">
             <div class="video">
-                <div v-if="mainVideo?.contentDetails?.videoId" class="main__video">
+                <div v-if="mainVideo?.snippet.resourceId.videoId" class="main__video">
                     <div class="main__video__wrapper">
                         <iframe
-                            :src="`https://www.youtube.com/embed/${mainVideo.contentDetails.videoId}?autoplay=1&mute=1&enablejsapi=1&loop=1&playlist=${mainVideo.contentDetails.videoId}`"
+                            :src="`https://www.youtube.com/embed/${mainVideo.snippet.resourceId.videoId}?autoplay=1&mute=1&enablejsapi=1&loop=1&playlist=${mainVideo.snippet.resourceId.videoId}`"
                             title="YouTube video player"
                             frameborder="0"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -19,7 +19,8 @@
                             <img :src="channelsData.snippet.thumbnails.default.url" />
                             <div>{{ mainVideo.snippet.channelTitle }}</div>
                         </div>
-                        <div>頻道簡介： {{ channelsData.brandingSettings.channel.description }}</div>
+                        <div>頻道簡介： {{ channelsData.snippet.description }}</div>
+                        <div>頻道影片數： {{ formatter(channelsData.statistics.videoCount) }}</div>
                         <div>頻道訂閱數： {{ formatter(channelsData.statistics.subscriberCount) }}</div>
                         <div>頻道觀看數： {{ formatter(channelsData.statistics.viewCount) }}</div>
                         <div>影片發佈日期：{{ videoData?.snippet.publishedAt }}</div>
@@ -54,14 +55,32 @@
             <h2>{{ commentThreadsList.length }} 則留言</h2>
             <ul class="user__list">
                 <li v-for="threads in commentThreadsList" :key="threads.id">
-                    <img :src="threads.snippet.topLevelComment.snippet.authorProfileImageUrl" />
-                    <div class="user__info">
-                        <div class="user__name">
-                            {{ threads.snippet.topLevelComment.snippet.authorDisplayName }}
-                            <span>- {{ threads.snippet.topLevelComment.snippet.publishedAt }}</span>
-                            <span>- 按讚數：{{ threads.snippet.topLevelComment.snippet.likeCount }}</span>
+                    <div class="user__wrapper">
+                        <img :src="threads.snippet.topLevelComment.snippet.authorProfileImageUrl" />
+                        <div class="user__info">
+                            <div class="user__name">
+                                {{ threads.snippet.topLevelComment.snippet.authorDisplayName }}
+                                <span>- {{ threads.snippet.topLevelComment.snippet.publishedAt }}</span>
+                                <span>- 按讚數：{{ threads.snippet.topLevelComment.snippet.likeCount }}</span>
+                            </div>
+                            <div v-html="threads.snippet.topLevelComment.snippet.textDisplay"></div>
                         </div>
-                        <div v-html="threads.snippet.topLevelComment.snippet.textDisplay"></div>
+                    </div>
+                    <div v-if="threads.replies" class="user__replies">
+                        回覆數：{{ threads.replies.comments.length }}
+                        <ul>
+                            <li v-for="replies in threads.replies.comments">
+                                <img :src="replies.snippet.authorProfileImageUrl" />
+                                <div class="user__info">
+                                    <div class="user__name">
+                                        {{ replies.snippet.authorDisplayName }}
+                                        <span>- {{ replies.snippet.publishedAt }}</span>
+                                        <span>- 按讚數：{{ replies.snippet.likeCount }}</span>
+                                    </div>
+                                    <div v-html="replies.snippet.textDisplay"></div>
+                                </div>
+                            </li>
+                        </ul>
                     </div>
                 </li>
             </ul>
@@ -76,6 +95,7 @@ import axios from 'axios';
 
 const APIKey = 'AIzaSyB2C72BoGuN4_KmG0-cLf5yiOgsMFLu4XU';
 
+const youtubeAccount = '@bwnet';
 let videoList = ref(null);
 let mainVideo = ref(null);
 let channelsData = ref(null);
@@ -86,13 +106,15 @@ const getChannelsData = async () => {
     try {
         let res = await axios.get('https://youtube.googleapis.com/youtube/v3/channels', {
             params: {
-                part: 'brandingSettings,contentDetails,contentOwnerDetails,id,localizations,snippet,statistics,status,topicDetails',
-                forHandle: '@bwnet',
+                part: 'id,snippet,statistics',
+                forHandle: youtubeAccount,
                 key: APIKey,
             },
         });
 
         channelsData.value = res.data.items[0];
+        getAllPlayList();
+
     } catch (error) {
         console.log(error);
     }
@@ -101,14 +123,14 @@ const getChannelsData = async () => {
 const getPlaylistItems = async () => {
     let res = await axios.get('https://youtube.googleapis.com/youtube/v3/playlistItems', {
         params: {
-            part: 'contentDetails,id,snippet,status',
+            part: 'id,snippet',
             maxResults: 20, // 可接受的值為 0 到 50 (含頭尾)。預設值為 5。
             playlistId: 'PLxdm6JxBd9NN_e_66y64vsIvmAtiVCkOK',
             key: APIKey,
         },
     });
 
-    videoList.value = res.data.items;
+    videoList.value = res.data.items; 
     mainVideo.value = videoList.value[0];
     getVideoData();
     getCommentThreads();
@@ -119,7 +141,7 @@ const getVideoData = async () => {
         let res = await axios.get('https://www.googleapis.com/youtube/v3/videos', {
             params: {
                 part: 'contentDetails,id,snippet,statistics,topicDetails',
-                id: computed(() => mainVideo.value.contentDetails?.videoId).value,
+                id: computed(() => mainVideo.value.snippet.resourceId.videoId).value,
                 key: APIKey,
             },
         });
@@ -134,13 +156,15 @@ const getCommentThreads = async () => {
     try {
         let res = await axios.get('https://youtube.googleapis.com/youtube/v3/commentThreads', {
             params: {
-                part: 'id,snippet',
-                videoId: computed(() => mainVideo.value.contentDetails?.videoId).value,
+                part: 'id,snippet,replies',
+                videoId: computed(() => mainVideo.value.snippet.resourceId.videoId).value,
+                maxResults: 50,
                 key: APIKey,
             },
         });
 
         commentThreadsList.value = res.data.items;
+        console.log(res.data);
     } catch (error) {
         console.log(error);
     }
@@ -151,8 +175,9 @@ const getAllPlayList = async () => {
         let res = await axios.get('https://youtube.googleapis.com/youtube/v3/playlists', {
             params: {
                 part: 'contentDetails,id,localizations,player,snippet,status',
-                channelId: 'UCwlpC8vX_GkRngPYSnwkJxg',
-                maxResults: 5, // 可接受的值為 0 到 50 (含頭尾)。預設值為 5。
+                channelId: computed(() => channelsData.value.id).value,
+                // id: 'UUwlpC8vX_GkRngPYSnwkJxg',
+                maxResults: 50, // 可接受的值為 0 到 50 (含頭尾)。預設值為 5。
                 key: APIKey,
             },
         });
@@ -171,7 +196,6 @@ const clickTag = (video) => {
 
 getChannelsData();
 getPlaylistItems();
-getAllPlayList();
 </script>
 
 <style lang="scss" scoped>
