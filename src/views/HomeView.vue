@@ -164,7 +164,6 @@ const getCommentThreads = async () => {
         });
 
         commentThreadsList.value = res.data.items;
-        console.log(res.data);
     } catch (error) {
         console.log(error);
     }
@@ -174,7 +173,7 @@ const getAllPlayList = async () => {
     try {
         let res = await axios.get('https://youtube.googleapis.com/youtube/v3/playlists', {
             params: {
-                part: 'contentDetails,id,localizations,player,snippet,status',
+                part: 'id,snippet',
                 channelId: computed(() => channelsData.value.id).value,
                 // id: 'UUwlpC8vX_GkRngPYSnwkJxg',
                 maxResults: 50, // 可接受的值為 0 到 50 (含頭尾)。預設值為 5。

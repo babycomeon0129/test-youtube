@@ -22,6 +22,11 @@ const router = createRouter({
             name: 'api',
             component: () => import('../views/ApiView.vue'),
         },
+        {
+            path: '/kkstream',
+            name: 'api',
+            component: () => import('../views/KkStream.vue'),
+        },
     ],
 });
 
