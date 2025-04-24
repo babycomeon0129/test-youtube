@@ -1,6 +1,8 @@
 <template>
     <header>
-        <div class="nav row">test youtube list</div>
+        <div class="nav row">
+            test youtube list .
+        </div>
     </header>
 </template>
 
