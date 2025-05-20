@@ -1,7 +1,7 @@
 <template>
     <header>
         <div class="nav row">
-            test youtube list ....
+            test  list ..........
         </div>
     </header>
 </template>
